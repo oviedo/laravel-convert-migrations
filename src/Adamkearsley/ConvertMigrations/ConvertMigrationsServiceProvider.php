@@ -27,9 +27,17 @@ class ConvertMigrationsServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app['artisan.convert.migrations'] = $this->app->share(function($app) {
-            return new ConvertMigrationsCommand;
-        });
+        $laravel = app();
+        $version = $laravel::VERSION;        
+        if(version_compare($version, '5.7', '>=')) {
+            $this->app->singleton('artisan.convert.migrations', function ($app) {
+                return new ConvertMigrationsCommand($app);
+            });    
+        } else {
+            $this->app['artisan.convert.migrations'] = $this->app->share(function($app) {
+                 return new ConvertMigrationsCommand;
+            });
+        }
 
         $this->commands('artisan.convert.migrations');
     }
