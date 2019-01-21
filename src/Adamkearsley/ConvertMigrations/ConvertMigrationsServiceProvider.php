@@ -27,8 +27,14 @@ class ConvertMigrationsServiceProvider extends ServiceProvider {
      */
     public function register()
     {
+        /*
         $this->app['artisan.convert.migrations'] = $this->app->share(function($app) {
             return new ConvertMigrationsCommand;
+        });
+        */
+        //Laravel 5.7
+        $this->app->singleton('artisan.convert.migrations', function ($app) {
+            return new ConvertMigrationsCommand($app);
         });
 
         $this->commands('artisan.convert.migrations');
